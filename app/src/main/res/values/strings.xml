@@ -5,4 +5,6 @@
     <string name="welcome_text">Displaying a list of Margirita cocktail drinks from Drinks Api here https://www.thecocktaildb.com/api/json/v1/1/search.php?s=margarita</string>
     <string name="drinkid">\"Drink id is \"</string>
     <string name="ok">Ok</string>
+    <string name="welcome_text_one">An App made by Ketu Imevbore as  my job recruitment test exercise</string>
+    <string name="welcome_text_two">I really hope to get this job and join the great family of developers at PRINTFUL</string>
 </resources>

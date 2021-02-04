@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/listFragment"
         android:name="com.flowz.printfuljobtask.ui.list.ListFragment"
-        android:label="fragment_list"
+        android:label="cocktail_list"
         tools:layout="@layout/fragment_list" >
         <action
             android:id="@+id/action_listFragment_to_detailFragment"
@@ -19,7 +19,7 @@
     <fragment
         android:id="@+id/detailFragment"
         android:name="com.flowz.printfuljobtask.ui.detail.DetailFragment"
-        android:label="fragment_detail"
+        android:label="cocktail_details"
         tools:layout="@layout/fragment_detail">
 
 

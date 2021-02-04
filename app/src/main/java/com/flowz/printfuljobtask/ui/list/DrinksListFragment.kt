@@ -20,7 +20,7 @@ import com.flowz.printfuljobtask.drinksrepository.DrinksRepository
 import com.flowz.printfuljobtask.models.Drink
 import com.flowz.printfuljobtask.models.Drinks
 import com.flowz.printfuljobtask.network.DrinksRetrieverApiClient
-import com.flowz.printfuljobtask.roomdb.DrinksDatabase
+//import com.flowz.printfuljobtask.roomdb.DrinksDatabase
 import com.flowz.printfuljobtask.utils.getConnectionType
 import kotlinx.android.synthetic.main.fragment_list.*
 
@@ -69,9 +69,11 @@ class ListFragment : ScopedFragment(), DrinksAdapter.OraNumViewHolder.DrinksRowC
         showWelcomeMarqueeText()
 
         val application= requireNotNull(activity).application
-        val cocktailDao = DrinksDatabase.invoke(application)
+//        val cocktailDao = DrinksDatabase.invoke(application)
 
-        val repository = DrinksRepository(DrinksRetrieverApiClient(), cocktailDao.drinksdao())
+        val repository = DrinksRepository(DrinksRetrieverApiClient())
+//        val repository = DrinksRepository(DrinksRetrieverApiClient(), cocktailDao.drinksdao())
+//        val repository = DrinksRepository1(DrinksRetrieverApiClient(), this.requireActivity())
         val viewModelFactory = DrinkViewModelFactory(repository)
 
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(DrinksListViewModel::class.java)
@@ -112,9 +114,9 @@ class ListFragment : ScopedFragment(), DrinksAdapter.OraNumViewHolder.DrinksRowC
         rv_drinks.adapter = drinkdadapter
         val decoration = DividerItemDecoration(context, VERTICAL)
         rv_drinks.addItemDecoration(decoration)
-//
-//        shimmer_frame_layout.stopShimmerAnimation()
-//        shimmer_frame_layout.visibility = View.GONE
+
+        shimmer_frame_layout.stopShimmerAnimation()
+        shimmer_frame_layout.visibility = View.GONE
     }
 
     fun showWelcomeMarqueeText(){
