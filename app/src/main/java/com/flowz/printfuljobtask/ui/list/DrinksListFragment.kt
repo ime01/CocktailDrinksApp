@@ -2,6 +2,7 @@ package com.flowz.printfuljobtask.ui.list
 
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,12 +17,14 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager.VERTICAL
 import com.flowz.forcastapp.display.base.ScopedFragment
 import com.flowz.introtooralanguage.adapters.DrinksAdapter
 import com.flowz.printfuljobtask.R
-import com.flowz.printfuljobtask.drinksrepository.DrinksRepository
+import com.flowz.printfuljobtask.drinkroomdb.DrinkDatabase
+import com.flowz.printfuljobtask.drinksrepository.DrinksCocktailsRepository
 import com.flowz.printfuljobtask.models.Drink
 import com.flowz.printfuljobtask.models.Drinks
 import com.flowz.printfuljobtask.network.DrinksRetrieverApiClient
 //import com.flowz.printfuljobtask.roomdb.DrinksDatabase
 import com.flowz.printfuljobtask.utils.getConnectionType
+import com.flowz.printfuljobtask.utils.showSnackbar
 import kotlinx.android.synthetic.main.fragment_list.*
 
 // TODO: Rename parameter arguments, choose names that match
@@ -42,8 +45,8 @@ private const val ARG_PARAM2 = "param2"
 */
 
 class ListFragment : ScopedFragment(), DrinksAdapter.OraNumViewHolder.DrinksRowClickListener {
-    lateinit var viewModel: DrinksListViewModel
     lateinit var drinkdadapter : DrinksAdapter
+    lateinit var drinksviewModel: DrinksCocktailsViewModel
 
     private var param1: String? = null
     private var param2: String? = null
@@ -69,40 +72,42 @@ class ListFragment : ScopedFragment(), DrinksAdapter.OraNumViewHolder.DrinksRowC
         showWelcomeMarqueeText()
 
         val application= requireNotNull(activity).application
-//        val cocktailDao = DrinksDatabase.invoke(application)
+        val database = DrinkDatabase.invoke(application)
+        val drinkDao = database.drinkDao()
 
-        val repository = DrinksRepository(DrinksRetrieverApiClient())
-//        val repository = DrinksRepository(DrinksRetrieverApiClient(), cocktailDao.drinksdao())
-//        val repository = DrinksRepository1(DrinksRetrieverApiClient(), this.requireActivity())
-        val viewModelFactory = DrinkViewModelFactory(repository)
+        val drinksrepository = DrinksCocktailsRepository(DrinksRetrieverApiClient(), drinkDao )
 
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(DrinksListViewModel::class.java)
+        val drinksviewModelFactory = DrinksCocktailViewModelFactory(drinksrepository)
+        drinksviewModel = ViewModelProviders.of(this.requireActivity(), drinksviewModelFactory).get(DrinksCocktailsViewModel::class.java)
+
 
         if (getConnectionType(context!!)) {
-//             showSnackbar()
-            viewModel.drinksFromNetwork.observe(viewLifecycleOwner, Observer {
+
+            drinksviewModel.drinksFromNetwork.observe(viewLifecycleOwner, Observer {
                 loadRecyclerView(it)
+                showSnackbar(welcome_text_marquee, "Data Feteched From Network")
             })
 
-            viewModel.setUp()
+            drinksviewModel.setUp()
 
         } else {
             AlertDialog.Builder(this.requireContext()).setTitle("No Internet Connection")
-                .setMessage("Please check your internet connection and try again")
+                .setMessage("Please check your internet connection and try again, Your Data is currently fetched from Local Room Database")
                 .setPositiveButton(getString(R.string.ok)) { _, _ -> }
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show()
 
-//            viewModel.drinksFromLocalDb.observe(viewLifecycleOwner, Observer {
-//                loadRecyclerView(it)
-//            })
-//
-//            viewModel.setUp()
+            drinksviewModel.drinksFromLocalDb.observe(viewLifecycleOwner, Observer {
 
+                val mDrinks:Drinks = Drinks(it)
+
+                Log.e("DbValuesShown", "$mDrinks")
+                loadRecyclerViewFromDb(mDrinks)
+                showSnackbar(welcome_text_marquee, "Data Feteched From Local Room Databse")
+
+        })
 
         }
-
-
 }
 
     fun loadRecyclerView(drinksrepo: Drinks){
@@ -119,7 +124,22 @@ class ListFragment : ScopedFragment(), DrinksAdapter.OraNumViewHolder.DrinksRowC
         shimmer_frame_layout.visibility = View.GONE
     }
 
-    fun showWelcomeMarqueeText(){
+        fun loadRecyclerViewFromDb(drinks : Drinks){
+
+            drinkdadapter = DrinksAdapter(this@ListFragment)
+            drinkdadapter.submitList(drinks.drinks)
+
+            rv_drinks.layoutManager = LinearLayoutManager(this.context)
+            rv_drinks.adapter = drinkdadapter
+            val decoration = DividerItemDecoration(context, VERTICAL)
+            rv_drinks.addItemDecoration(decoration)
+
+            shimmer_frame_layout.stopShimmerAnimation()
+            shimmer_frame_layout.visibility = View.GONE
+        }
+
+
+        fun showWelcomeMarqueeText(){
         welcome_text_marquee.setSingleLine()
         welcome_text_marquee.ellipsize = TextUtils.TruncateAt.MARQUEE
         welcome_text_marquee.marqueeRepeatLimit = -1
