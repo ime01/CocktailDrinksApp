@@ -22,6 +22,7 @@ import com.flowz.printfuljobtask.drinksrepository.DrinksCocktailsRepository
 import com.flowz.printfuljobtask.models.Drink
 import com.flowz.printfuljobtask.models.Drinks
 import com.flowz.printfuljobtask.network.DrinksRetrieverApiClient
+import com.flowz.printfuljobtask.utils.EspressoIdlingResource
 //import com.flowz.printfuljobtask.roomdb.DrinksDatabase
 import com.flowz.printfuljobtask.utils.getConnectionType
 import com.flowz.printfuljobtask.utils.showSnackbar
@@ -44,7 +45,7 @@ private const val ARG_PARAM2 = "param2"
 
 */
 
-class ListFragment : ScopedFragment(), DrinksAdapter.OraNumViewHolder.DrinksRowClickListener {
+class ListFragment : ScopedFragment(), DrinksAdapter.DrinksViewHolder.DrinksRowClickListener {
     lateinit var drinkdadapter : DrinksAdapter
     lateinit var drinksviewModel: DrinksCocktailsViewModel
 
@@ -81,10 +82,12 @@ class ListFragment : ScopedFragment(), DrinksAdapter.OraNumViewHolder.DrinksRowC
         drinksviewModel = ViewModelProviders.of(this.requireActivity(), drinksviewModelFactory).get(DrinksCocktailsViewModel::class.java)
 
 
-        if (getConnectionType(context!!)) {
+        if (getConnectionType(requireContext())) {
 
-            drinksviewModel.drinksFromNetwork.observe(viewLifecycleOwner, Observer {
+            drinksviewModel.drinksFromNetwork.observe(requireActivity(), Observer {
+
                 loadRecyclerView(it)
+                EspressoIdlingResource.decrement()
                 showSnackbar(welcome_text_marquee, "Data Feteched From Network")
             })
 
@@ -97,7 +100,7 @@ class ListFragment : ScopedFragment(), DrinksAdapter.OraNumViewHolder.DrinksRowC
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show()
 
-            drinksviewModel.drinksFromLocalDb.observe(viewLifecycleOwner, Observer {
+            drinksviewModel.drinksFromLocalDb.observe(requireActivity(), Observer {
 
                 val mDrinks:Drinks = Drinks(it)
 
@@ -171,6 +174,6 @@ class ListFragment : ScopedFragment(), DrinksAdapter.OraNumViewHolder.DrinksRowC
 
         val sendCocktailDetails = ListFragmentDirections.actionListFragmentToDetailFragment()
         sendCocktailDetails.cocktaildetails = drink
-        Navigation.findNavController(view!!).navigate(sendCocktailDetails)
+        Navigation.findNavController(requireView()).navigate(sendCocktailDetails)
     }
 }

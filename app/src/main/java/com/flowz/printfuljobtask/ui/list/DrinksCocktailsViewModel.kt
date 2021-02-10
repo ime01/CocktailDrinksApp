@@ -1,11 +1,13 @@
 package com.flowz.printfuljobtask.ui.list
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.flowz.printfuljobtask.drinksrepository.DrinksCocktailsRepository
 import com.flowz.printfuljobtask.models.Drink
 import com.flowz.printfuljobtask.models.Drinks
+import com.flowz.printfuljobtask.utils.EspressoIdlingResource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -16,9 +18,10 @@ class DrinksCocktailsViewModel (private var drinksRepository: DrinksCocktailsRep
 
 
     fun setUp(){
-        viewModelScope.launch(Dispatchers.Default){
-//            drinksFromNetwork.postValue(DrinksRepository(DrinksRetrieverApiClient(),).fetchAllDrinks())
 
+       EspressoIdlingResource.increment()
+
+        viewModelScope.launch(Dispatchers.IO){
             drinksFromNetwork.postValue(drinksRepository.fetchAllDrinks())
 
 //            Sending Drinks from Network into Room Database
@@ -60,30 +63,14 @@ class DrinksCocktailsViewModel (private var drinksRepository: DrinksCocktailsRep
                  strInstructionsDE,
                 strMeasure1
                 )
-//                Insert Object Containing all Drinks into Room Database
 
-                if (drinksFromLocalDb.value == null){
+//                Insert Object Containing all Drinks into Room Database
                     drinksRepository.insertDrinksIntoDb(drink)
+//
                 }
 
             }
 
         }
 
-    }
-
-
-
-
-//    fun setUpFromDb(){
-//        viewModelScope.launch(Dispatchers.Default){
-////            drinksFromNetwork.postValue(DrinksRepository(DrinksRetrieverApiClient(),).fetchAllDrinks())
-//
-////          Fetching drnks from RoomdB
-////            drinksFromLocalDb.postValue(drinksRepository.drinksFromDb.value)
-////            drinksFromLocalDb.postValue(drinksRepository.drinksFromDb.value)
-//
-//        }
-
-//    }
 }

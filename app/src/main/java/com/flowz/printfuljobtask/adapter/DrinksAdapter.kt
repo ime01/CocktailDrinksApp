@@ -11,16 +11,16 @@ import com.flowz.printfuljobtask.models.Drink
 import kotlinx.android.synthetic.main.cocktail_list_item.view.*
 
 
-class DrinksAdapter(val listener: OraNumViewHolder.DrinksRowClickListener) :ListAdapter<Drink, DrinksAdapter.OraNumViewHolder>(DrinksDiffCallback()) {
+class DrinksAdapter(val listener: DrinksViewHolder.DrinksRowClickListener) :ListAdapter<Drink, DrinksAdapter.DrinksViewHolder>(DrinksDiffCallback()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OraNumViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DrinksViewHolder {
 
         val view = LayoutInflater.from(parent.context).inflate(R.layout.cocktail_list_item, parent, false)
-        return OraNumViewHolder(view, listener)
+        return DrinksViewHolder(view, listener)
 
     }
 
-    override fun onBindViewHolder(holder: OraNumViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: DrinksViewHolder, position: Int) {
 
         holder.bind(getItem(position))
         holder.itemView.setOnClickListener {
@@ -29,7 +29,7 @@ class DrinksAdapter(val listener: OraNumViewHolder.DrinksRowClickListener) :List
 
     }
 
-    class OraNumViewHolder(view: View, val listener: DrinksRowClickListener) :
+    class DrinksViewHolder(view: View, val listener: DrinksRowClickListener) :
         RecyclerView.ViewHolder(view) {
 
         fun bind(drink: Drink) {

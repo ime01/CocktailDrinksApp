@@ -10,10 +10,7 @@ interface DrinkDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert (drink: Drink)
 
-    @Query("SELECT * FROM drinks_cocktails_table ")
+    @Query("SELECT * FROM drinks_cocktails_table where id = id")
     fun getDrinks() : LiveData<List<Drink>>
-
-//    @Delete
-//    suspend fun deleteAllDrinks(drink: Drink)
 
 }
