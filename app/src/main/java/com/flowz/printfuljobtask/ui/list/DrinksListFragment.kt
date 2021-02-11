@@ -105,7 +105,7 @@ class ListFragment : ScopedFragment(), DrinksAdapter.DrinksViewHolder.DrinksRowC
                 val mDrinks:Drinks = Drinks(it)
 
                 Log.e("DbValuesShown", "$mDrinks")
-                loadRecyclerViewFromDb(mDrinks)
+                loadRecyclerView(mDrinks)
                 showSnackbar(welcome_text_marquee, "Data Feteched From Local Room Databse")
 
         })
@@ -126,21 +126,6 @@ class ListFragment : ScopedFragment(), DrinksAdapter.DrinksViewHolder.DrinksRowC
         shimmer_frame_layout.stopShimmerAnimation()
         shimmer_frame_layout.visibility = View.GONE
     }
-
-        fun loadRecyclerViewFromDb(drinks : Drinks){
-
-            drinkdadapter = DrinksAdapter(this@ListFragment)
-            drinkdadapter.submitList(drinks.drinks)
-
-            rv_drinks.layoutManager = LinearLayoutManager(this.context)
-            rv_drinks.adapter = drinkdadapter
-            val decoration = DividerItemDecoration(context, VERTICAL)
-            rv_drinks.addItemDecoration(decoration)
-
-            shimmer_frame_layout.stopShimmerAnimation()
-            shimmer_frame_layout.visibility = View.GONE
-        }
-
 
         fun showWelcomeMarqueeText(){
         welcome_text_marquee.setSingleLine()
