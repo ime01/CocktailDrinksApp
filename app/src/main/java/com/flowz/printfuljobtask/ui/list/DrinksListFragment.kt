@@ -84,7 +84,7 @@ class ListFragment : ScopedFragment(), DrinksAdapter.DrinksViewHolder.DrinksRowC
 
         if (getConnectionType(requireContext())) {
 
-            drinksviewModel.drinksFromNetwork.observe(requireActivity(), Observer {
+            drinksviewModel.drinksFromNetwork.observe(this.requireActivity(), Observer {
 
                 loadRecyclerView(it)
                 EspressoIdlingResource.decrement()
@@ -100,7 +100,7 @@ class ListFragment : ScopedFragment(), DrinksAdapter.DrinksViewHolder.DrinksRowC
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show()
 
-            drinksviewModel.drinksFromLocalDb.observe(requireActivity(), Observer {
+            drinksviewModel.drinksFromLocalDb.observe(this.requireActivity(), Observer {
 
                 val mDrinks:Drinks = Drinks(it)
 
