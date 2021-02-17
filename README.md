@@ -10,7 +10,7 @@ uses MVVM pattern
 
 offline data caching with ROOM DATABASE
 
-Manual Dependency Injection
+Dependency Injection with DAGGER HILT
 
 Testing
 
