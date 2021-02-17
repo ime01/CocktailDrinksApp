@@ -22,7 +22,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [DetailFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class DetailFragment : ScopedFragment() {
+class DetailFragment : Fragment() {
 
     private var drink: Drink? = null
 

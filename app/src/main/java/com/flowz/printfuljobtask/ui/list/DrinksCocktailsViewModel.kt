@@ -1,6 +1,7 @@
 package com.flowz.printfuljobtask.ui.list
 
 import android.util.Log
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,7 +12,7 @@ import com.flowz.printfuljobtask.utils.EspressoIdlingResource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class DrinksCocktailsViewModel (private var drinksRepository: DrinksCocktailsRepository): ViewModel() {
+class DrinksCocktailsViewModel @ViewModelInject constructor (private var drinksRepository: DrinksCocktailsRepository): ViewModel() {
 
     val drinksFromNetwork = MutableLiveData<Drinks>()
     val drinksFromLocalDb = drinksRepository.drinksFromDb

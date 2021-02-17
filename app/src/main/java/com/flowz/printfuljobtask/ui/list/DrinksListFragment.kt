@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
@@ -21,11 +22,13 @@ import com.flowz.printfuljobtask.drinkroomdb.DrinkDatabase
 import com.flowz.printfuljobtask.drinksrepository.DrinksCocktailsRepository
 import com.flowz.printfuljobtask.models.Drink
 import com.flowz.printfuljobtask.models.Drinks
+import com.flowz.printfuljobtask.network.ApiServiceCalls
 import com.flowz.printfuljobtask.network.DrinksRetrieverApiClient
 import com.flowz.printfuljobtask.utils.EspressoIdlingResource
 //import com.flowz.printfuljobtask.roomdb.DrinksDatabase
 import com.flowz.printfuljobtask.utils.getConnectionType
 import com.flowz.printfuljobtask.utils.showSnackbar
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_list.*
 
 // TODO: Rename parameter arguments, choose names that match
@@ -44,10 +47,11 @@ private const val ARG_PARAM2 = "param2"
   I will be fetching a list of  Margirita Cocktail drinks from this API https://www.thecocktaildb.com/api/json/v1/1/search.php?s=margarita
 
 */
-
-class ListFragment : ScopedFragment(), DrinksAdapter.DrinksViewHolder.DrinksRowClickListener {
+@AndroidEntryPoint
+class ListFragment : Fragment(), DrinksAdapter.DrinksViewHolder.DrinksRowClickListener {
     lateinit var drinkdadapter : DrinksAdapter
-    lateinit var drinksviewModel: DrinksCocktailsViewModel
+//    lateinit var drinksviewModel: DrinksCocktailsViewModel
+    private val drinksviewModel by viewModels<DrinksCocktailsViewModel>()
 
     private var param1: String? = null
     private var param2: String? = null
@@ -71,20 +75,22 @@ class ListFragment : ScopedFragment(), DrinksAdapter.DrinksViewHolder.DrinksRowC
 
         shimmer_frame_layout.startShimmerAnimation()
         showWelcomeMarqueeText()
+        drinkdadapter = DrinksAdapter(this@ListFragment)
 
-        val application= requireNotNull(activity).application
-        val database = DrinkDatabase.invoke(application)
-        val drinkDao = database.drinkDao()
+//        val application= requireNotNull(activity).application
+//        val database = DrinkDatabase.invoke(application)
+//        val drinkDao = database.drinkDao()
 
-        val drinksrepository = DrinksCocktailsRepository(DrinksRetrieverApiClient(), drinkDao )
-
-        val drinksviewModelFactory = DrinksCocktailViewModelFactory(drinksrepository)
-        drinksviewModel = ViewModelProviders.of(this.requireActivity(), drinksviewModelFactory).get(DrinksCocktailsViewModel::class.java)
+//        val drinksrepository = DrinksCocktailsRepository(ApiServiceCalls, drinkDao )
+//
+//        val drinksviewModelFactory = DrinksCocktailViewModelFactory(drinksrepository)
+//        drinksviewModel = ViewModelProviders.of(this.requireActivity(), drinksviewModelFactory).get(DrinksCocktailsViewModel::class.java)
+//        drinksviewModel = ViewModelProviders.of(viewLifecycleOwner).get(DrinksCocktailsViewModel::class.java)
 
 
         if (getConnectionType(requireContext())) {
 
-            drinksviewModel.drinksFromNetwork.observe(this.requireActivity(), Observer {
+            drinksviewModel.drinksFromNetwork.observe(viewLifecycleOwner, Observer {
 
                 loadRecyclerView(it)
                 EspressoIdlingResource.decrement()
@@ -100,7 +106,7 @@ class ListFragment : ScopedFragment(), DrinksAdapter.DrinksViewHolder.DrinksRowC
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show()
 
-            drinksviewModel.drinksFromLocalDb.observe(this.requireActivity(), Observer {
+            drinksviewModel.drinksFromLocalDb.observe(viewLifecycleOwner, Observer {
 
                 val mDrinks:Drinks = Drinks(it)
 
@@ -115,9 +121,7 @@ class ListFragment : ScopedFragment(), DrinksAdapter.DrinksViewHolder.DrinksRowC
 
     fun loadRecyclerView(drinksrepo: Drinks){
 
-        drinkdadapter = DrinksAdapter(this@ListFragment)
         drinkdadapter.submitList(drinksrepo.drinks)
-
         rv_drinks.layoutManager = LinearLayoutManager(this.context)
         rv_drinks.adapter = drinkdadapter
         val decoration = DividerItemDecoration(context, VERTICAL)
