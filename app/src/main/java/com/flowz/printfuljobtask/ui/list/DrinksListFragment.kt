@@ -50,7 +50,7 @@ private const val ARG_PARAM2 = "param2"
 @AndroidEntryPoint
 class ListFragment : Fragment(), DrinksAdapter.DrinksViewHolder.DrinksRowClickListener {
     lateinit var drinkdadapter : DrinksAdapter
-//    lateinit var drinksviewModel: DrinksCocktailsViewModel
+
     private val drinksviewModel by viewModels<DrinksCocktailsViewModel>()
 
     private var param1: String? = null
@@ -77,16 +77,6 @@ class ListFragment : Fragment(), DrinksAdapter.DrinksViewHolder.DrinksRowClickLi
         showWelcomeMarqueeText()
         drinkdadapter = DrinksAdapter(this@ListFragment)
 
-//        val application= requireNotNull(activity).application
-//        val database = DrinkDatabase.invoke(application)
-//        val drinkDao = database.drinkDao()
-
-//        val drinksrepository = DrinksCocktailsRepository(ApiServiceCalls, drinkDao )
-//
-//        val drinksviewModelFactory = DrinksCocktailViewModelFactory(drinksrepository)
-//        drinksviewModel = ViewModelProviders.of(this.requireActivity(), drinksviewModelFactory).get(DrinksCocktailsViewModel::class.java)
-//        drinksviewModel = ViewModelProviders.of(viewLifecycleOwner).get(DrinksCocktailsViewModel::class.java)
-
 
         if (getConnectionType(requireContext())) {
 
@@ -97,7 +87,7 @@ class ListFragment : Fragment(), DrinksAdapter.DrinksViewHolder.DrinksRowClickLi
                 showSnackbar(welcome_text_marquee, "Data Feteched From Network")
             })
 
-            drinksviewModel.setUp()
+//            drinksviewModel.setUp()
 
         } else {
             AlertDialog.Builder(this.requireContext()).setTitle("No Internet Connection")
