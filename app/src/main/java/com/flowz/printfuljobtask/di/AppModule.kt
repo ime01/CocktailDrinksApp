@@ -5,6 +5,9 @@ import android.content.Context
 import androidx.room.Room
 import com.flowz.printfuljobtask.drinkroomdb.DrinkDao
 import com.flowz.printfuljobtask.drinkroomdb.DrinkDatabase
+import com.flowz.printfuljobtask.drinksrepository.DrinksCocktailsRepository
+import com.flowz.printfuljobtask.drinksrepository.DrinksCocktailsRepositoryForTesting
+import com.flowz.printfuljobtask.drinksrepository.TdrinkRepository
 import com.flowz.printfuljobtask.network.ApiServiceCalls
 import com.flowz.printfuljobtask.network.DrinksRetrieverApiClient
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
@@ -54,5 +57,12 @@ object AppModule {
     @Provides
     @Singleton
     fun providesDrinksDao (db: DrinkDatabase) = db.drinkDao()
+
+    @Singleton
+    @Provides
+    fun provideDefaultDrinkRepository(
+        dao: DrinkDao,
+        api: ApiServiceCalls
+    ) = DrinksCocktailsRepositoryForTesting( api, dao) as TdrinkRepository
     
 }
