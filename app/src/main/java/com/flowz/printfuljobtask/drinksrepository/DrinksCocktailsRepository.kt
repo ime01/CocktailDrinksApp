@@ -24,6 +24,10 @@ class DrinksCocktailsRepository @Inject constructor (private val apiClient: ApiS
         dbReference.insert(drink)
     }
 
+    suspend fun insertListOfDrinksIntoDb(drinks: List<Drink>){
+        dbReference.insertDrinks(drinks)
+    }
+
     suspend fun clearDrinksInDb(){
         dbReference.clearAll()
     }
