@@ -6,8 +6,6 @@ An android Application that fetches list of Margirita Cocktail drinks and recipe
 
 fully built with Kotlin
 
-uses MVVM pattern
-
 offline data caching with ROOM DATABASE
 
 Dependency Injection with DAGGER HILT
@@ -19,6 +17,12 @@ uses Retrofit for network calls
 Gson For parsing Json Data
 
 uses Couroutines for background task
+
+uses MVVM with repository pattern
+
+LiveData
+
+Flow
 
 uses Jet pack Navigation for movement around the app
 
