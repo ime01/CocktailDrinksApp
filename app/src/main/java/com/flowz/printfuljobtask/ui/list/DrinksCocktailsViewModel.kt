@@ -1,9 +1,8 @@
 package com.flowz.printfuljobtask.ui.list
 
+import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.flowz.printfuljobtask.drinksrepository.DrinksCocktailsRepository
 import com.flowz.printfuljobtask.models.Drink
 import com.flowz.printfuljobtask.models.Drinks
@@ -19,6 +18,11 @@ class DrinksCocktailsViewModel @ViewModelInject constructor (private var drinksR
 
     init {
         setUp()
+    }
+
+    fun searchDrink(searchQuery: String): LiveData<List<Drink>> {
+        return drinksRepository.searchDrinks(searchQuery).asLiveData()
+        Log.d(TAG, "Searched Successfull")
     }
 
     fun setUp(){
@@ -38,10 +42,11 @@ class DrinksCocktailsViewModel @ViewModelInject constructor (private var drinksR
                 e.printStackTrace()
             }
 
-
-
             }
-
         }
+
+    companion object{
+        const val TAG = "DrinksVM"
+    }
 
 }

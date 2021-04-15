@@ -3,11 +3,10 @@ package com.flowz.printfuljobtask.ui.list
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -27,6 +26,7 @@ import com.flowz.printfuljobtask.network.DrinksRetrieverApiClient
 import com.flowz.printfuljobtask.utils.EspressoIdlingResource
 //import com.flowz.printfuljobtask.roomdb.DrinksDatabase
 import com.flowz.printfuljobtask.utils.getConnectionType
+import com.flowz.printfuljobtask.utils.onQueryTextChanged
 import com.flowz.printfuljobtask.utils.showSnackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_list.*
@@ -58,6 +58,7 @@ class ListFragment : Fragment(), DrinksAdapter.DrinksViewHolder.DrinksRowClickLi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
@@ -109,6 +110,30 @@ class ListFragment : Fragment(), DrinksAdapter.DrinksViewHolder.DrinksRowClickLi
         }
 }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+
+        inflater.inflate(R.menu.menu_layout, menu)
+        val menuItem = menu!!.findItem(R.id.search_oraword)
+        val searchView = menuItem.actionView as SearchView
+
+        searchView.onQueryTextChanged {
+            searchDatabase(it)
+            Log.d(TAG, "Search Successful")
+        }
+
+    }
+
+    private fun searchDatabase(query:String){
+        val searchQuery = "%$query%"
+        drinksviewModel.searchDrink(searchQuery).observe(viewLifecycleOwner, Observer {list->
+            list.let {
+                drinkdadapter.submitList(it)
+            }
+
+        })
+    }
+
+
     fun loadRecyclerView(drinksrepo: Drinks){
 
         drinkdadapter.submitList(drinksrepo.drinks)
@@ -139,6 +164,8 @@ class ListFragment : Fragment(), DrinksAdapter.DrinksViewHolder.DrinksRowClickLi
          * @return A new instance of fragment ListFragment.
          */
         // TODO: Rename and change types and number of parameters
+            const val TAG = "Drinks Fragment"
+
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             ListFragment().apply {
