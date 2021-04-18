@@ -12,6 +12,7 @@ import kotlinx.android.parcel.Parcelize
 @Entity(tableName = "drinks_cocktails_table")
 @Parcelize
 data class Drink(
+    
     val dateModified: String? = null,
     val idDrink: String? = null,
     val strAlcoholic: String? = null,

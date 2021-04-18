@@ -2,10 +2,12 @@
     <string name="app_name">PrintfulJobTask</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="welcome_text">Displaying a list of Margirita cocktail drinks from Drinks Api here https://www.thecocktaildb.com/api/json/v1/1/search.php?s=margarita</string>
+    <string name="welcome_text">Displaying a list of Cocktail Drinks from Drinks Api here https://www.thecocktaildb.com</string>
     <string name="drinkid">\"Drink id is \"</string>
     <string name="ok">Ok</string>
     <string name="welcome_text_one">An App made by me as my job recruitment test exercise for the position of Junior Android Developer</string>
     <string name="welcome_text_two">I really hope to get this job and join the great family of developers at PRINTFUL</string>
     <string name="search_drink">Search Drink</string>
+    <string name="enter_drink_name">Enter type of drink</string>
+    <string name="enter_valid_input">Enter Valid Input</string>
 </resources>

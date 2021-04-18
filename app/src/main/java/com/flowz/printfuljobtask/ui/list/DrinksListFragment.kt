@@ -9,20 +9,14 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager.VERTICAL
-import com.flowz.forcastapp.display.base.ScopedFragment
 import com.flowz.introtooralanguage.adapters.DrinksAdapter
 import com.flowz.printfuljobtask.R
-import com.flowz.printfuljobtask.drinkroomdb.DrinkDatabase
-import com.flowz.printfuljobtask.drinksrepository.DrinksCocktailsRepository
 import com.flowz.printfuljobtask.models.Drink
 import com.flowz.printfuljobtask.models.Drinks
-import com.flowz.printfuljobtask.network.ApiServiceCalls
-import com.flowz.printfuljobtask.network.DrinksRetrieverApiClient
 import com.flowz.printfuljobtask.utils.EspressoIdlingResource
 //import com.flowz.printfuljobtask.roomdb.DrinksDatabase
 import com.flowz.printfuljobtask.utils.getConnectionType
@@ -49,7 +43,8 @@ private const val ARG_PARAM2 = "param2"
 */
 @AndroidEntryPoint
 class ListFragment : Fragment(), DrinksAdapter.DrinksViewHolder.DrinksRowClickListener {
-    lateinit var drinkdadapter : DrinksAdapter
+    lateinit var drinkdadapter: DrinksAdapter
+    lateinit var drinkType: String
 
     private val drinksviewModel by viewModels<DrinksCocktailsViewModel>()
 
@@ -66,7 +61,8 @@ class ListFragment : Fragment(), DrinksAdapter.DrinksViewHolder.DrinksRowClickLi
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_list, container, false)
     }
 
@@ -74,112 +70,123 @@ class ListFragment : Fragment(), DrinksAdapter.DrinksViewHolder.DrinksRowClickLi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        shimmer_frame_layout.startShimmerAnimation()
         showWelcomeMarqueeText()
         drinkdadapter = DrinksAdapter(this@ListFragment)
 
+        drinksviewModel.drinksFromLocalDb.observe(viewLifecycleOwner, Observer {
 
-        if (getConnectionType(requireContext())) {
+            val mDrinks: Drinks = Drinks(it)
 
-            drinksviewModel.drinksFromNetwork.observe(viewLifecycleOwner, Observer {
-
-                loadRecyclerView(it)
-                EspressoIdlingResource.decrement()
-                showSnackbar(welcome_text_marquee, "Data Feteched From Network")
-            })
-
-//            drinksviewModel.setUp()
-
-        } else {
-            AlertDialog.Builder(this.requireContext()).setTitle("No Internet Connection")
-                .setMessage("Please check your internet connection and try again, Your Data is currently fetched from Local Room Database")
-                .setPositiveButton(getString(R.string.ok)) { _, _ -> }
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .show()
-
-            drinksviewModel.drinksFromLocalDb.observe(viewLifecycleOwner, Observer {
-
-                val mDrinks:Drinks = Drinks(it)
-
-                Log.e("DbValuesShown", "$mDrinks")
-                loadRecyclerView(mDrinks)
-                showSnackbar(welcome_text_marquee, "Data Feteched From Local Room Databse")
+            Log.e("DbValuesShown", "$mDrinks")
+            loadRecyclerView(mDrinks)
+            showSnackbar(welcome_text_marquee, "Data Feteched From Local Room Databse")
 
         })
 
-        }
-}
+        fetch_drinks.setOnClickListener {
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+            if (TextUtils.isEmpty(drink_name.text.toString())) {
+                drink_name.setError(getString(R.string.enter_valid_input))
+                return@setOnClickListener
+            } else {
+                shimmer_frame_layout.startShimmerAnimation()
+                drinkType = drink_name.text.toString().trim()
 
-        inflater.inflate(R.menu.menu_layout, menu)
-        val menuItem = menu!!.findItem(R.id.search_oraword)
-        val searchView = menuItem.actionView as SearchView
+                if (getConnectionType(requireContext())) {
+                    drinksviewModel.searchDrnkTypeFromNetwork(drinkType)
+                    showSnackbar(welcome_text_marquee, "Data Feteched From Network")
 
-        searchView.onQueryTextChanged {
-            searchDatabase(it)
-            Log.d(TAG, "Search Successful")
-        }
+                    drinksviewModel.drinksFromNetwork.observe(viewLifecycleOwner, Observer {
 
-    }
+                        loadRecyclerView(it)
+                        EspressoIdlingResource.decrement()
 
-    private fun searchDatabase(query:String){
-        val searchQuery = "%$query%"
-        drinksviewModel.searchDrink(searchQuery).observe(viewLifecycleOwner, Observer {list->
-            list.let {
-                drinkdadapter.submitList(it)
-            }
+                    })
 
-        })
-    }
+                } else {
+                    AlertDialog.Builder(this.requireContext()).setTitle("No Internet Connection")
+                        .setMessage("Please check your internet connection and try again, Your Data is currently fetched from Local Room Database")
+                        .setPositiveButton(getString(R.string.ok)) { _, _ -> }
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show()
 
-
-    fun loadRecyclerView(drinksrepo: Drinks){
-
-        drinkdadapter.submitList(drinksrepo.drinks)
-        rv_drinks.layoutManager = LinearLayoutManager(this.context)
-        rv_drinks.adapter = drinkdadapter
-        val decoration = DividerItemDecoration(context, VERTICAL)
-        rv_drinks.addItemDecoration(decoration)
-
-        shimmer_frame_layout.stopShimmerAnimation()
-        shimmer_frame_layout.visibility = View.GONE
-    }
-
-        fun showWelcomeMarqueeText(){
-        welcome_text_marquee.setSingleLine()
-        welcome_text_marquee.ellipsize = TextUtils.TruncateAt.MARQUEE
-        welcome_text_marquee.marqueeRepeatLimit = -1
-        welcome_text_marquee.isSelected = true
-    }
-
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ListFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-            const val TAG = "Drinks Fragment"
-
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ListFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
                 }
             }
+        }
     }
 
-    override fun onItemClickListener(drink: Drink) {
+            override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 
-        val sendCocktailDetails = ListFragmentDirections.actionListFragmentToDetailFragment()
-        sendCocktailDetails.cocktaildetails = drink
-        Navigation.findNavController(requireView()).navigate(sendCocktailDetails)
-    }
-}
+                inflater.inflate(R.menu.menu_layout, menu)
+                val menuItem = menu!!.findItem(R.id.search_oraword)
+                val searchView = menuItem.actionView as SearchView
+
+                searchView.onQueryTextChanged {
+                    searchDatabase(it)
+                    Log.d(TAG, "Search Successful")
+                }
+
+            }
+
+            private fun searchDatabase(query: String) {
+                val searchQuery = "%$query%"
+                drinksviewModel.searchDrinkFromDb(searchQuery)
+                    .observe(viewLifecycleOwner, Observer { list ->
+                        list.let {
+                            drinkdadapter.submitList(it)
+                        }
+
+                    })
+            }
+
+
+            fun loadRecyclerView(drinksrepo: Drinks) {
+
+                drinkdadapter.submitList(drinksrepo.drinks)
+                rv_drinks.layoutManager = LinearLayoutManager(this.context)
+                rv_drinks.adapter = drinkdadapter
+                val decoration = DividerItemDecoration(context, VERTICAL)
+                rv_drinks.addItemDecoration(decoration)
+
+                shimmer_frame_layout.stopShimmerAnimation()
+                shimmer_frame_layout.visibility = View.GONE
+            }
+
+            fun showWelcomeMarqueeText() {
+                welcome_text_marquee.setSingleLine()
+                welcome_text_marquee.ellipsize = TextUtils.TruncateAt.MARQUEE
+                welcome_text_marquee.marqueeRepeatLimit = -1
+                welcome_text_marquee.isSelected = true
+            }
+
+
+            companion object {
+            /**
+             * Use this factory method to create a new instance of
+             * this fragment using the provided parameters.
+             *
+             * @param param1 Parameter 1.
+             * @param param2 Parameter 2.
+             * @return A new instance of fragment ListFragment.
+             */
+            // TODO: Rename and change types and number of parameters
+            const val TAG = "Drinks Fragment"
+
+            @JvmStatic
+            fun newInstance(param1: String, param2: String) =
+                ListFragment().apply {
+                    arguments = Bundle().apply {
+                        putString(ARG_PARAM1, param1)
+                        putString(ARG_PARAM2, param2)
+                    }
+                }
+        }
+
+            override fun onItemClickListener(drink: Drink) {
+
+                val sendCocktailDetails =
+                    ListFragmentDirections.actionListFragmentToDetailFragment()
+                sendCocktailDetails.cocktaildetails = drink
+                Navigation.findNavController(requireView()).navigate(sendCocktailDetails)
+            }
+        }

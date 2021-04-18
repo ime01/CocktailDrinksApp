@@ -35,7 +35,7 @@ class DrinksCocktailsRepositoryForTesting @Inject constructor (private val apiCl
 
     override suspend fun fetchDrinks(): Resource<Drinks> {
         return try {
-            val response = apiClient.FetchMargaritaCocktails()
+            val response = apiClient.FetchMargaritaCocktails("Old Fashioned")
             if(response != null) {
                 response?.let {
                     return@let Resource.success(it)

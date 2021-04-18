@@ -15,26 +15,21 @@ class DrinksCocktailsViewModel @ViewModelInject constructor (private var drinksR
     val drinksFromNetwork = MutableLiveData<Drinks>()
     val drinksFromLocalDb = drinksRepository.drinksFromDb
 
-
-    init {
-        setUp()
-    }
-
-    fun searchDrink(searchQuery: String): LiveData<List<Drink>> {
+    fun searchDrinkFromDb(searchQuery: String): LiveData<List<Drink>> {
         return drinksRepository.searchDrinks(searchQuery).asLiveData()
         Log.d(TAG, "Searched Successfull")
     }
 
-    fun setUp(){
+    fun searchDrnkTypeFromNetwork(drinkType: String){
 
        EspressoIdlingResource.increment()
 
         viewModelScope.launch(Dispatchers.IO){
             try {
-                drinksFromNetwork.postValue(drinksRepository.fetchAllDrinks())
+                drinksFromNetwork.postValue(drinksRepository.fetchAllDrinks(drinkType))
 
 //            Sending Drinks from Network into Room Database
-                val alldrinks = drinksRepository.fetchAllDrinks()
+                val alldrinks = drinksRepository.fetchAllDrinks(drinkType)
 
                 drinksRepository.insertListOfDrinksIntoDb(alldrinks.drinks)
 
