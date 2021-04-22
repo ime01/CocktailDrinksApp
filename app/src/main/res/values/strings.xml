@@ -1,11 +1,37 @@
 <resources>
-    <string name="app_name">PrintfulJobTask</string>
+    <string name="app_name">DRINKS</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="welcome_text">Displaying a list of Margirita cocktail drinks from Drinks Api here https://www.thecocktaildb.com/api/json/v1/1/search.php?s=margarita</string>
+    <string name="welcome_text">Displaying a list of Cocktail Drinks from Drinks Api here https://www.thecocktaildb.com</string>
     <string name="drinkid">\"Drink id is \"</string>
     <string name="ok">Ok</string>
     <string name="welcome_text_one">An App made by me as my job recruitment test exercise for the position of Junior Android Developer</string>
     <string name="welcome_text_two">I really hope to get this job and join the great family of developers at PRINTFUL</string>
     <string name="search_drink">Search Drink</string>
+    <string name="enter_drink_name">Enter type of drink</string>
+    <string name="enter_valid_input">Enter Valid Input</string>
+    <string name="not_found">Drink Type not dound, check the words entered and your connection then try again</string>
+    <string name="night_mode">Night Mode</string>
+    <string name="default_mode">Default Mode</string>
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="settings">Settings</string>
+    <string name="choose_font">Choose Font Type</string>
+    <string name="font_type">App Font Type</string>
+    <string name="night_mode_on">Night Mode On</string>
+    <string name="have_fun">HAVE FUN!</string>
+    <string name="drinks_is_a_simple_app_to_help_you_make_the_best_cocktail_drinks">DRINKS IS A SIMPLE APP TO HELP YOU MAKE THE BEST COCKTAIL DRINKS!</string>
+    <string name="drink_image">drink image logo</string>
 </resources>

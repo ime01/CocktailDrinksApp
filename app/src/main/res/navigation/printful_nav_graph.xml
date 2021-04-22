@@ -15,6 +15,9 @@
             app:destination="@id/detailFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim" />
+        <action
+            android:id="@+id/action_listFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
     </fragment>
     <fragment
         android:id="@+id/detailFragment"
@@ -30,6 +33,14 @@
             android:defaultValue="@null" />
         <action
             android:id="@+id/action_detailFragment_to_listFragment2"
+            app:destination="@id/listFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.flowz.printfuljobtask.SettingsFragment"
+        android:label="Settings" >
+        <action
+            android:id="@+id/action_settingsFragment_to_listFragment"
             app:destination="@id/listFragment" />
     </fragment>
 </navigation>

@@ -48,7 +48,15 @@ class DetailFragment : Fragment() {
 
         cocktail_title.setText(drink?.strDrink)
         cocktail_id.setText("Drink id is" + drink?.idDrink)
+        cocktail_ingredient_measure1.setText(drink?.strMeasure1 + " " + drink?.strIngredient1)
+        cocktail_ingredient_measure2.setText(drink?.strMeasure2 + " " + drink?.strIngredient2)
+        cocktail_ingredient_measure3.setText(drink?.strMeasure3 + " " + drink?.strIngredient3)
+        cocktail_ingredient_measure4.setText(drink?.strMeasure4 + " " + drink?.strIngredient4)
+        cocktail_ingredient_measure5.setText(drink?.strMeasure5 + " " + drink?.strIngredient5)
+        cocktail_ingredient_measure6.setText(drink?.strMeasure6 + " " + drink?.strIngredient6)
+        cocktail_ingredient_measure7.setText(drink?.strMeasure7 + " " +drink?.strIngredient7)
         cocktail_instructions.setText(drink?.strInstructions)
+
 
         Glide.with(cocktail_icon)
             .load(drink?.strDrinkThumb)

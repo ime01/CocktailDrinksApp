@@ -16,8 +16,8 @@ class DrinksCocktailsRepository @Inject constructor (private val apiClient: ApiS
     val drinksFromDb = dbReference.getDrinks()
 
 
-    suspend fun fetchAllDrinks():Drinks{
-        return apiClient.FetchMargaritaCocktails()
+    suspend fun fetchAllDrinks(drinkType: String):Drinks{
+        return apiClient.FetchMargaritaCocktails(drinkType)
     }
 
     fun searchDrinks(searchQuery: String): Flow<List<Drink>> {
