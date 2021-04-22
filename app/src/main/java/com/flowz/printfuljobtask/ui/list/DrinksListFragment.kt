@@ -6,10 +6,16 @@ import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager.VERTICAL
@@ -17,11 +23,8 @@ import com.flowz.introtooralanguage.adapters.DrinksAdapter
 import com.flowz.printfuljobtask.R
 import com.flowz.printfuljobtask.models.Drink
 import com.flowz.printfuljobtask.models.Drinks
-import com.flowz.printfuljobtask.utils.EspressoIdlingResource
+import com.flowz.printfuljobtask.utils.*
 //import com.flowz.printfuljobtask.roomdb.DrinksDatabase
-import com.flowz.printfuljobtask.utils.getConnectionType
-import com.flowz.printfuljobtask.utils.onQueryTextChanged
-import com.flowz.printfuljobtask.utils.showSnackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_list.*
 
@@ -70,6 +73,8 @@ class ListFragment : Fragment(), DrinksAdapter.DrinksViewHolder.DrinksRowClickLi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        loadSettings()
+
         showWelcomeMarqueeText()
         drinkdadapter = DrinksAdapter(this@ListFragment)
 
@@ -79,7 +84,7 @@ class ListFragment : Fragment(), DrinksAdapter.DrinksViewHolder.DrinksRowClickLi
 
             Log.e("DbValuesShown", "$mDrinks")
             loadRecyclerView(mDrinks)
-            showSnackbar(welcome_text_marquee, "Data Feteched From Local Room Databse")
+            showSnackbar(welcome_text_marquee, " Drinks Feteched From Local Room Databse")
 
         })
 
@@ -89,33 +94,59 @@ class ListFragment : Fragment(), DrinksAdapter.DrinksViewHolder.DrinksRowClickLi
                 drink_name.setError(getString(R.string.enter_valid_input))
                 return@setOnClickListener
             } else {
-                shimmer_frame_layout.startShimmerAnimation()
                 drinkType = drink_name.text.toString().trim()
 
                 if (getConnectionType(requireContext())) {
                     drinksviewModel.searchDrnkTypeFromNetwork(drinkType)
-                    showSnackbar(welcome_text_marquee, "Data Feteched From Network")
+                    drinksviewModel.drinkNetworkstatus.observe(viewLifecycleOwner, Observer {state->
 
-                    drinksviewModel.drinksFromNetwork.observe(viewLifecycleOwner, Observer {
+                        state?.also {
+                            when (it){
+                                DrinkApiStatus.ERROR->{
+                                    showSnackbar(welcome_text_marquee, getString(R.string.not_found))
+                                    error_image.isVisible = true
+                                }
+                                DrinkApiStatus.LOADING->{
+                                    shimmer_frame_layout.startShimmerAnimation()
+                                    error_image.isVisible = false
+                                }
+                                DrinkApiStatus.DONE->{
+                                    showSnackbar(welcome_text_marquee, "Drink Type Feteched From Network")
+                                    drinksviewModel.drinksFromNetwork.observe(viewLifecycleOwner, Observer {
 
-                        loadRecyclerView(it)
-                        EspressoIdlingResource.decrement()
+                                        loadRecyclerView(it)
+                                        EspressoIdlingResource.decrement()
 
+                                    })
+                                }
+                            }
+                        }
                     })
-
                 } else {
                     AlertDialog.Builder(this.requireContext()).setTitle("No Internet Connection")
                         .setMessage("Please check your internet connection and try again, Your Data is currently fetched from Local Room Database")
                         .setPositiveButton(getString(R.string.ok)) { _, _ -> }
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .show()
-
                 }
             }
         }
     }
 
-            override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+    private fun loadSettings() {
+      val sp = PreferenceManager.getDefaultSharedPreferences(requireContext())
+
+        val nightMode = sp.getBoolean("nightorday", false)
+
+        if (nightMode){
+            AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_YES)
+        }else{
+            AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_FOLLOW_SYSTEM)
+        }
+
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 
                 inflater.inflate(R.menu.menu_layout, menu)
                 val menuItem = menu!!.findItem(R.id.search_oraword)
@@ -128,6 +159,17 @@ class ListFragment : Fragment(), DrinksAdapter.DrinksViewHolder.DrinksRowClickLi
 
             }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId){
+
+            R.id.settings ->{
+                findNavController().navigate(R.id.action_listFragment_to_settingsFragment)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
             private fun searchDatabase(query: String) {
                 val searchQuery = "%$query%"
                 drinksviewModel.searchDrinkFromDb(searchQuery)
@@ -139,9 +181,9 @@ class ListFragment : Fragment(), DrinksAdapter.DrinksViewHolder.DrinksRowClickLi
                     })
             }
 
-
             fun loadRecyclerView(drinksrepo: Drinks) {
 
+                error_image.isVisible = false
                 drinkdadapter.submitList(drinksrepo.drinks)
                 rv_drinks.layoutManager = LinearLayoutManager(this.context)
                 rv_drinks.adapter = drinkdadapter

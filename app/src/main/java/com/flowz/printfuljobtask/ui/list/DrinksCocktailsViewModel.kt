@@ -9,11 +9,17 @@ import com.flowz.printfuljobtask.models.Drinks
 import com.flowz.printfuljobtask.utils.EspressoIdlingResource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
+enum class  DrinkApiStatus {LOADING, ERROR, DONE}
+
 
 class DrinksCocktailsViewModel @ViewModelInject constructor (private var drinksRepository: DrinksCocktailsRepository): ViewModel() {
 
     val drinksFromNetwork = MutableLiveData<Drinks>()
     val drinksFromLocalDb = drinksRepository.drinksFromDb
+    val drinkNetworkstatus = MutableLiveData<DrinkApiStatus>()
+
 
     fun searchDrinkFromDb(searchQuery: String): LiveData<List<Drink>> {
         return drinksRepository.searchDrinks(searchQuery).asLiveData()
@@ -26,8 +32,15 @@ class DrinksCocktailsViewModel @ViewModelInject constructor (private var drinksR
 
         viewModelScope.launch(Dispatchers.IO){
             try {
+                withContext(Dispatchers.Main){
+                    drinkNetworkstatus.value = DrinkApiStatus.LOADING
+                }
+
                 drinksFromNetwork.postValue(drinksRepository.fetchAllDrinks(drinkType))
 
+                withContext(Dispatchers.Main){
+                    drinkNetworkstatus.value = DrinkApiStatus.DONE
+                }
 //            Sending Drinks from Network into Room Database
                 val alldrinks = drinksRepository.fetchAllDrinks(drinkType)
 
@@ -35,6 +48,9 @@ class DrinksCocktailsViewModel @ViewModelInject constructor (private var drinksR
 
             }catch (e:Exception){
                 e.printStackTrace()
+                withContext(Dispatchers.Main){
+                    drinkNetworkstatus.value = DrinkApiStatus.ERROR
+                }
             }
 
             }

@@ -3,15 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     tools:context=".ui.list.ListFragment">
 
     <TextView
         android:id="@+id/welcome_text_marquee"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/black"
+        android:backgroundTint="@color/black"
         android:text="@string/welcome_text"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="16sp"
         android:textStyle="bold|italic"
         app:layout_constraintEnd_toEndOf="parent"
@@ -40,6 +42,17 @@
             android:singleLine="true" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <ImageView
+        android:id="@+id/error_image"
+        android:layout_width="@dimen/img_dimen"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_baseline_no_drinks_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/fetch_drinks"
         android:layout_width="wrap_content"
@@ -52,12 +65,14 @@
         android:id="@+id/rv_drinks"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        tools:listitem="@layout/cocktail_list_item"
         android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
         android:background="@color/design_default_color_primary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/fetch_drinks"
-        tools:listitem="@layout/cocktail_list_item" />
+        />
 
 
     <com.facebook.shimmer.ShimmerFrameLayout
@@ -98,6 +113,7 @@
             <include layout="@layout/shimmer_placeholder_layout" />
 
             <include layout="@layout/shimmer_placeholder_layout" />
+
 
         </LinearLayout>
     </com.facebook.shimmer.ShimmerFrameLayout>
