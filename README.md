@@ -2,7 +2,7 @@
 
 an app created for my job test exercise at Printful
 
-An android Application that fetches list of Margirita Cocktail drinks and recipe from drinks Api here https://www.thecocktaildb.com/api/json/v1/1/search.php?s=margarita
+An android Application that helps you make the best Cocktail Drinks as fetches list of Cocktail drinks, ingredients and recipe for making them from an Api
 
 fully built with Kotlin
 
