@@ -17,13 +17,16 @@ import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager.VERTICAL
 import com.flowz.introtooralanguage.adapters.DrinksAdapter
 import com.flowz.printfuljobtask.R
 import com.flowz.printfuljobtask.models.Drink
 import com.flowz.printfuljobtask.models.Drinks
 import com.flowz.printfuljobtask.utils.*
+import com.google.android.material.snackbar.Snackbar
 //import com.flowz.printfuljobtask.roomdb.DrinksDatabase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_list.*
@@ -74,6 +77,9 @@ class ListFragment : Fragment(), DrinksAdapter.DrinksViewHolder.DrinksRowClickLi
         super.onViewCreated(view, savedInstanceState)
 
         loadSettings()
+        swipeToDeleteNumber()
+        showSnackbar(welcome_text_marquee, " Drinks Feteched From Local Room Databse")
+
 
         showWelcomeMarqueeText()
         drinkdadapter = DrinksAdapter(this@ListFragment)
@@ -84,8 +90,6 @@ class ListFragment : Fragment(), DrinksAdapter.DrinksViewHolder.DrinksRowClickLi
 
             Log.e("DbValuesShown", "$mDrinks")
             loadRecyclerView(mDrinks)
-            showSnackbar(welcome_text_marquee, " Drinks Feteched From Local Room Databse")
-
         })
 
         fetch_drinks.setOnClickListener {
@@ -133,6 +137,29 @@ class ListFragment : Fragment(), DrinksAdapter.DrinksViewHolder.DrinksRowClickLi
         }
     }
 
+    private fun swipeToDeleteNumber() {
+
+        ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
+                0,
+                ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+        ){
+            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val drink = drinkdadapter.currentList[viewHolder.adapterPosition]
+
+                    drinksviewModel.deleteDrink(drink)
+                    Snackbar.make(rv_drinks, " ${drink.strDrink} Deleted", Snackbar.LENGTH_LONG)
+                            .setAction("UNDO"){ drinksviewModel.insertDrink(drink) }.show()
+
+            }
+
+        }).attachToRecyclerView(rv_drinks)
+
+    }
+
     private fun loadSettings() {
       val sp = PreferenceManager.getDefaultSharedPreferences(requireContext())
 
@@ -166,6 +193,22 @@ class ListFragment : Fragment(), DrinksAdapter.DrinksViewHolder.DrinksRowClickLi
                 findNavController().navigate(R.id.action_listFragment_to_settingsFragment)
                 true
             }
+
+            R.id.delete_all ->{
+                AlertDialog.Builder(this.requireContext()).setTitle(getString(R.string.delete_all_title))
+                        .setMessage(getString(R.string.sure_to_delete_all))
+                        .setPositiveButton(getString(R.string.ok)) { _, _ ->
+                            drinksviewModel.clearAllDrinks()
+                        }
+                        .setNegativeButton(getString(R.string.cancel)){ _, _ -> }
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show()
+
+
+                true
+            }
+
+
             else -> super.onOptionsItemSelected(item)
         }
     }

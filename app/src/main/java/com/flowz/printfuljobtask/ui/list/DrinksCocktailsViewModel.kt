@@ -56,6 +56,26 @@ class DrinksCocktailsViewModel @ViewModelInject constructor (private var drinksR
             }
         }
 
+
+     fun deleteDrink(drink: Drink){
+         viewModelScope.launch (Dispatchers.IO){
+             drinksRepository.deleteDrinkInDb(drink)
+         }
+    }
+
+    fun clearAllDrinks(){
+        viewModelScope.launch (Dispatchers.IO){
+            drinksRepository.clearAllDrinksInDb()
+        }
+    }
+
+    fun insertDrink(drink: Drink){
+        viewModelScope.launch (Dispatchers.IO){
+            drinksRepository.insertDrinkIntoDb(drink)
+        }
+
+    }
+
     companion object{
         const val TAG = "DrinksVM"
     }

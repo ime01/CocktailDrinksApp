@@ -24,7 +24,7 @@ class DrinksCocktailsRepository @Inject constructor (private val apiClient: ApiS
         return dbReference.searchDrinks(searchQuery)
     }
 
-    suspend fun insertDrinksIntoDb(drink: Drink){
+    suspend fun insertDrinkIntoDb(drink: Drink){
         dbReference.insert(drink)
     }
 
@@ -32,7 +32,11 @@ class DrinksCocktailsRepository @Inject constructor (private val apiClient: ApiS
         dbReference.insertDrinks(drinks)
     }
 
-    suspend fun clearDrinksInDb(){
+    suspend fun deleteDrinkInDb(drink: Drink){
+        dbReference.delete(drink)
+    }
+
+    suspend fun clearAllDrinksInDb(){
         dbReference.clearAll()
     }
 
