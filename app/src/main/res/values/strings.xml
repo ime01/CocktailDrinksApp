@@ -10,7 +10,7 @@
     <string name="search_drink">Search Drink</string>
     <string name="enter_drink_name">Enter type of drink</string>
     <string name="enter_valid_input">Enter Valid Input</string>
-    <string name="not_found">Drink Type not dound, check the words entered and your connection then try again</string>
+    <string name="not_found">Drink Type not found, check the words entered and your connection then try again</string>
     <string name="night_mode">Night Mode</string>
     <string name="default_mode">Default Mode</string>
     <!-- Preference Titles -->
@@ -34,4 +34,8 @@
     <string name="have_fun">HAVE FUN!</string>
     <string name="drinks_is_a_simple_app_to_help_you_make_the_best_cocktail_drinks">DRINKS IS A SIMPLE APP TO HELP YOU MAKE THE BEST COCKTAIL DRINKS!</string>
     <string name="drink_image">drink image logo</string>
+    <string name="delete_all">Delete All Saved Drinks</string>
+    <string name="sure_to_delete_all">Are you sure, you want to delette all saved drinks?</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete_all_title">DELETE ALL</string>
 </resources>

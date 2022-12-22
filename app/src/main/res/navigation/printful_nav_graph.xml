@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/listFragment"
-        android:name="com.flowz.printfuljobtask.ui.list.ListFragment"
+        android:name="com.flowz.drinkcocktails.ui.list.ListFragment"
         android:label="Cocktail List"
         tools:layout="@layout/fragment_list" >
         <action
@@ -21,14 +21,14 @@
     </fragment>
     <fragment
         android:id="@+id/detailFragment"
-        android:name="com.flowz.printfuljobtask.ui.detail.DetailFragment"
+        android:name="com.flowz.drinkcocktails.ui.detail.DetailFragment"
         android:label="Cocktai Details"
         tools:layout="@layout/fragment_detail">
 
 
         <argument
             android:name="cocktaildetails"
-            app:argType="com.flowz.printfuljobtask.models.Drink"
+            app:argType="com.flowz.drinkcocktails.models.Drink"
             app:nullable="true"
             android:defaultValue="@null" />
         <action
@@ -37,7 +37,7 @@
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.flowz.printfuljobtask.SettingsFragment"
+        android:name="com.flowz.drinkcocktails.SettingsFragment"
         android:label="Settings" >
         <action
             android:id="@+id/action_settingsFragment_to_listFragment"

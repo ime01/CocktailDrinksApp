@@ -7,7 +7,6 @@
             app:key="nightorday"
             app:title="@string/night_mode_on" />
 
-
     </PreferenceCategory>
 
 </PreferenceScreen>
