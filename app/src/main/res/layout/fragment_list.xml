@@ -58,6 +58,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/search_drink"
+        app:layout_constraintBottom_toBottomOf="@+id/drink_name_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/drink_name_layout" />
 

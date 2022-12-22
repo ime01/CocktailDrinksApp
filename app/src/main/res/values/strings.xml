@@ -10,7 +10,7 @@
     <string name="search_drink">Search Drink</string>
     <string name="enter_drink_name">Enter type of drink</string>
     <string name="enter_valid_input">Enter Valid Input</string>
-    <string name="not_found">Drink Type not dound, check the words entered and your connection then try again</string>
+    <string name="not_found">Drink Type not found, check the words entered and your connection then try again</string>
     <string name="night_mode">Night Mode</string>
     <string name="default_mode">Default Mode</string>
     <!-- Preference Titles -->

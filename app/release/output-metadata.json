@@ -4,14 +4,14 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.flowz.printfuljobtask",
+  "applicationId": "com.flowz.drinkcocktails",
   "variantName": "processReleaseResources",
   "elements": [
     {
       "type": "SINGLE",
       "filters": [],
-      "versionCode": 1,
-      "versionName": "1.0",
+      "versionCode": 10,
+      "versionName": "10.0",
       "outputFile": "app-release.apk"
     }
   ]
