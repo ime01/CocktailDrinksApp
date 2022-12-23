@@ -22,10 +22,12 @@ class DrinksAdapter(val listener: DrinksViewHolder.DrinksRowClickListener) :List
 
     override fun onBindViewHolder(holder: DrinksViewHolder, position: Int) {
 
-        holder.bind(getItem(position))
+        val currentItem = getItem(position)
+
+        holder.bind(currentItem)
 
         holder.itemView.setOnClickListener {
-            listener.onItemClickListener(getItem(position))
+            listener.onItemClickListener(currentItem)
         }
 
     }
