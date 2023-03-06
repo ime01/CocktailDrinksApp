@@ -4,6 +4,8 @@ an app created for my job test exercise at Printful
 
 An android Application that helps you make the best Cocktail Drinks as fetches list of Cocktail drinks, ingredients and recipe for making them from an Api
 
+[![Build Status](https://app.bitrise.io/app/7f79aaddb6a3818c/status.svg?token=c-PL4fpnciTodQwB3Nf-VA&branch=master)](https://app.bitrise.io/app/7f79aaddb6a3818c)
+
 fully built with Kotlin
 
 offline data caching with ROOM DATABASE
