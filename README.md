@@ -35,6 +35,7 @@ uses Safe Args to push data from one Fragment to Another
 utilzes Facebook Shimmer effect for placeholder before network calls are completed
 
 pictures of the app screens below
+testing trigger on Bitrise workflow
 
 ![Screenshot_2021-04-22-00-53-13](https://user-images.githubusercontent.com/44091450/115637296-a7f3e200-a2c4-11eb-84bc-1cf375c8df16.png)
 
